@@ -5,8 +5,9 @@
     CHECKSUM     equ -MAGIC_NUMBER  ; calculate the checksum
                                     ; (magic number + checksum + flags should equal 0)
     KERNEL_STACK_SIZE equ 4096      ; size of stack in bytes
-    extern sum3;
-
+    extern sum3;                    ;define symbol for external function
+    extern kernel_main
+    
     section .bss
     align 4                                     ; align at 4 bytes
     kernel_stack:                               ; label points to beginning of memory
@@ -24,13 +25,11 @@
         mov esp, kernel_stack + KERNEL_STACK_SIZE   ; point esp to the start of the
                                                     ; stack (end of memory area)
     loader:                         ; the loader label (defined as entry point in linker script)
-        ;mov eax, 0xCAFEBABE         ; place the number 0xCAFEBABE in the register eax
-        ;external sum3
-        
+       
         push dword 3 ;a
         push dword 2 ;b
         push dword 1 ;c
-        call sum3
-        
+        call sum3    ;call c function
+        call kernel_main
     .loop:
         jmp .loop                   ; loop forever
